@@ -39,12 +39,42 @@
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:var(--bg);
     color:var(--ink);
     font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
     line-height:1.8;
     -webkit-font-smoothing:antialiased;
+    background:linear-gradient(120deg,var(--bg),var(--bg) 40%,var(--line) 70%,var(--bg) 100%);
+    background-size:300% 300%;
+    animation:drift 18s ease-in-out infinite;
   }
+  @keyframes drift{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    body{animation:none;}
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @keyframes fadeSlideUp{
+    from{opacity:0;transform:translateY(28px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .hero-anim > *{
+    opacity:0;
+    animation:fadeSlideUp .9s ease forwards;
+  }
+  .hero-anim .en{animation-delay:.1s;}
+  .hero-anim h1{animation-delay:.3s;}
+  .hero-anim p.tagline{animation-delay:.55s;}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 20px;}
   header.hero{
     padding:88px 20px 56px;
@@ -177,13 +207,13 @@
 </head>
 <body>
 
-<header class="hero">
+<header class="hero hero-anim">
   <div class="en">Mo Huang / Freelancer</div>
   <h1>黃瀚德 Mo</h1>
   <p class="tagline">行銷公關・內容企劃・品牌顧問・Podcast 節目製作人<br>一人統籌從企劃到交付，讓合作方只需要做決定</p>
 </header>
 
-<section class="about">
+<section class="about reveal">
   <div class="wrap">
     <h2>關於我</h2>
     <p>我目前是自由接案人，身分涵蓋行銷公關、內容企劃、品牌顧問與節目製作人。合作對象包含媒體、品牌、表演團體與知識內容方。我習慣一人統籌從企劃到交付的整條流程，讓對方只需要做決定，不用盯每個環節。</p>
@@ -192,7 +222,7 @@
   </div>
 </section>
 
-<section class="services">
+<section class="services reveal">
   <div class="wrap">
     <h2>我能做什麼</h2>
     <div class="services">
@@ -220,7 +250,7 @@
   </div>
 </section>
 
-<section>
+<section class="reveal">
   <div class="wrap">
     <h2>代表節目專案</h2>
     <div class="works">
@@ -270,7 +300,7 @@
   </div>
 </section>
 
-<section>
+<section class="reveal">
   <div class="wrap">
     <h2>品牌與公關合作</h2>
     <div class="brands">
@@ -294,7 +324,7 @@
   </div>
 </section>
 
-<section class="contact">
+<section class="contact reveal">
   <div class="wrap">
     <h2 style="justify-content:center;">聯絡方式</h2>
     <p style="color:var(--sub);margin-top:-8px;">合作洽談歡迎直接聯絡</p>
@@ -307,6 +337,23 @@
 </section>
 
 <footer>© 2026 Mo Huang. All rights reserved.</footer>
+
+<script>
+  var items = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    items.forEach(function(el){ io.observe(el); });
+  } else {
+    items.forEach(function(el){ el.classList.add('in-view'); });
+  }
+</script>
 
 </body>
 </html>
